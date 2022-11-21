@@ -11,14 +11,14 @@ import UIKit
 class ImageWidget: UIControl , UINavigationControllerDelegate, UIImagePickerControllerDelegate
 {
     let blurOveray = UIVisualEffectView(effect: UIBlurEffect())
-    let loadImageButton = UIButton(frame: CGRectZero)
-    let imageView = UIImageView(frame: CGRectZero)
-    let activityIndicator = UIActivityIndicatorView(frame: CGRectZero)
+    let loadImageButton = UIButton(frame: CGRect.zero)
+    let imageView = UIImageView(frame: CGRect.zero)
+    let activityIndicator = UIActivityIndicatorView(frame: CGRect.zero)
     
     let ciContext = CIContext(options: nil)
     let filter = CIFilter(name: "CIToneCurve")
     
-    var backgroundBlock : Async?
+//    var backgroundBlock : Async?
     var loadedImage : UIImage?
     var filteredImage : UIImage?
     
@@ -28,23 +28,23 @@ class ImageWidget: UIControl , UINavigationControllerDelegate, UIImagePickerCont
     {
         super.init(frame: frame)
  
-        backgroundColor = UIColor.blackColor()
+        backgroundColor = UIColor.black
         
-        imageView.contentMode = UIViewContentMode.ScaleAspectFit
+        imageView.contentMode = UIView.ContentMode.scaleAspectFit
         
         addSubview(imageView)
         addSubview(blurOveray)
         
-        loadImageButton.setTitle("Load Image", forState: .Normal)
-        loadImageButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        loadImageButton.setTitle("Load Image", for: .normal)
+        loadImageButton.setTitleColor(UIColor.black, for: .normal)
         
-        loadImageButton.addTarget(self, action: #selector(ImageWidget.loadImageButtonClickHandler(_:)), forControlEvents: .TouchUpInside)
+        loadImageButton.addTarget(self, action: #selector(ImageWidget.loadImageButtonClickHandler(_:)), for: .touchUpInside)
         
         addSubview(loadImageButton)
         
         activityIndicator.hidesWhenStopped = true
         
-        activityIndicator.color = UIColor.blackColor()
+        activityIndicator.color = UIColor.black
         addSubview(activityIndicator)
     }
     
@@ -53,16 +53,16 @@ class ImageWidget: UIControl , UINavigationControllerDelegate, UIImagePickerCont
         super.init(coder: aDecoder)
     }
     
-    func loadImageButtonClickHandler(button : UIButton)
+    @objc func loadImageButtonClickHandler(_ button : UIButton)
     {
         let imagePicker = UIImagePickerController()
         
         imagePicker.delegate = self
         imagePicker.allowsEditing = false
-        imagePicker.modalInPopover = false
-        imagePicker.sourceType = UIImagePickerControllerSourceType.SavedPhotosAlbum
+        imagePicker.isModalInPopover = false
+        imagePicker.sourceType = UIImagePickerController.SourceType.savedPhotosAlbum
         
-        viewController!.presentViewController(imagePicker, animated: true, completion: nil)
+        viewController!.present(imagePicker, animated: true, completion: nil)
     }
     
     var filterIsRunning : Bool = false
@@ -90,41 +90,51 @@ class ImageWidget: UIControl , UINavigationControllerDelegate, UIImagePickerCont
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
     {
-        backgroundBlock?.cancel()
-        backgroundBlock = nil
+//        backgroundBlock?.cancel()
+//        backgroundBlock = nil
         
         filterIsRunning = false
         
-        if let rawImage = info[UIImagePickerControllerOriginalImage] as? UIImage
+        if let rawImage = info[UIImagePickerController.InfoKey.originalImage.rawValue] as? UIImage
         {
             loadedImage = rawImage.resizeToBoundingSquare(boundingSquareSideLength: 1024)
             
             applyFilterAsync()
         }
 
-        viewController!.dismissViewControllerAnimated(true, completion: nil)
+        viewController!.dismiss(animated: true, completion: nil)
     }
 
 
     
     func applyFilterAsync()
     {
-        backgroundBlock = Async.background
-        {
-            guard !self.filterIsRunning, let
-                filter = self.filter,
-                loadedImage = self.loadedImage else {
+      
+        
+        DispatchQueue.global(qos: .background).async {
+            
+            guard !self.filterIsRunning, let filter = self.filter,
+                let loadedImage = self.loadedImage else {
                     return
             }
           
             self.filterIsRunning = true
             self.filteredImage = ImageWidget.applyFilter(loadedImage: loadedImage, curveValues: self.curveValues, ciContext: self.ciContext, filter: filter)
+
+            DispatchQueue.main.async {
+                self.imageView.image = self.filteredImage
+                self.filterIsRunning = false
+            }
         }
-        .main
-        {
-            self.imageView.image = self.filteredImage
-            self.filterIsRunning = false
-        }
+        
+//        backgroundBlock = Async.background
+//        {
+//
+//        }
+//        .main
+//        {
+//
+//        }
     }
     
     
@@ -140,9 +150,9 @@ class ImageWidget: UIControl , UINavigationControllerDelegate, UIImagePickerCont
         filter.setValue(CIVector(x: 0.75, y: CGFloat(curveValues[3])), forKey: "inputPoint3")
         filter.setValue(CIVector(x: 1.0, y: CGFloat(curveValues[4])), forKey: "inputPoint4")
         
-        let filteredImageData = filter.valueForKey(kCIOutputImageKey) as! CIImage
-        let filteredImageRef = ciContext.createCGImage(filteredImageData, fromRect: filteredImageData.extent)
-        let filteredImage = UIImage(CGImage: filteredImageRef)
+        let filteredImageData = filter.value(forKey: kCIOutputImageKey) as! CIImage
+        let filteredImageRef = ciContext.createCGImage(filteredImageData, from: filteredImageData.extent)
+        let filteredImage = UIImage(cgImage: filteredImageRef!)
        
         return filteredImage
     }

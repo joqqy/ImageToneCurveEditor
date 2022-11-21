@@ -10,9 +10,9 @@ import UIKit
 
 class ViewController: UIViewController
 {
-    let imageWidget = ImageWidget(frame: CGRectZero)
-    let toneCurveEditor = ToneCurveEditor(frame: CGRectZero)
-    let resetButton = UIButton(frame: CGRectZero)
+    let imageWidget = ImageWidget(frame: CGRect.zero)
+    let toneCurveEditor = ToneCurveEditor(frame: CGRect.zero)
+    let resetButton = UIButton(frame: CGRect.zero)
 
     override func viewDidLoad()
     {
@@ -20,16 +20,16 @@ class ViewController: UIViewController
 
         imageWidget.viewController = self
         
-        resetButton.setTitle("Reset Curve", forState: .Normal)
-        resetButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        resetButton.addTarget(self, action: #selector(ViewController.resetButtonClickedSelector(_:)), forControlEvents: .TouchUpInside)
+        resetButton.setTitle("Reset Curve", for: .normal)
+        resetButton.setTitleColor(UIColor.black, for: .normal)
+        resetButton.addTarget(self, action: #selector(ViewController.resetButtonClickedSelector(_:)), for: .touchUpInside)
         
         view.addSubview(imageWidget)
         view.addSubview(toneCurveEditor)
         view.addSubview(resetButton)
         
         toneCurveEditor.curveValues = curveValues
-        toneCurveEditor.addTarget(self, action: #selector(ViewController.toneCurveEditorChangedSelector(_:)), forControlEvents: .ValueChanged)
+        toneCurveEditor.addTarget(self, action: #selector(ViewController.toneCurveEditorChangedSelector(_:)), for: .valueChanged)
     }
     
     func resetCurveValues()
@@ -37,12 +37,12 @@ class ViewController: UIViewController
         curveValues = [0.0, 0.25, 0.5, 0.75, 1.0]
     }
     
-    func resetButtonClickedSelector(value: UIButton)
+    @objc func resetButtonClickedSelector(_ value: UIButton)
     {
         self.resetCurveValues()
     }
     
-    func toneCurveEditorChangedSelector(value : ToneCurveEditor)
+    @objc func toneCurveEditorChangedSelector(_ value : ToneCurveEditor)
     {
         curveValues = value.curveValues
     }

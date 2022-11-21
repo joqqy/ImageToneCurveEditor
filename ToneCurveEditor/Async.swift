@@ -33,28 +33,28 @@ import Foundation
 prefix func +(v: qos_class_t) -> Int {
     return Int(v.rawValue)
 }
-
+/*
 private class GCD {
     
     /* dispatch_get_queue() */
-    class func mainQueue() -> dispatch_queue_t {
-        return dispatch_get_main_queue()
+    class func mainQueue() -> DispatchQueue {
+        DispatchQueue.main
         // Could use return dispatch_get_global_queue(+qos_class_main(), 0)
     }
     class func userInteractiveQueue() -> dispatch_queue_t {
-        return dispatch_get_global_queue(+QOS_CLASS_USER_INTERACTIVE, 0)
+        return DispatchQueue.global(+QOS_CLASS_USER_INTERACTIVE, 0)
     }
     class func userInitiatedQueue() -> dispatch_queue_t {
-        return dispatch_get_global_queue(+QOS_CLASS_USER_INITIATED, 0)
+        return DispatchQueue.global(+QOS_CLASS_USER_INITIATED, 0)
     }
     class func defaultQueue() -> dispatch_queue_t {
-        return dispatch_get_global_queue(+QOS_CLASS_DEFAULT, 0)
+        return DispatchQueue.global(+QOS_CLASS_DEFAULT, 0)
     }
     class func utilityQueue() -> dispatch_queue_t {
-        return dispatch_get_global_queue(+QOS_CLASS_UTILITY, 0)
+        return DispatchQueue.global(+QOS_CLASS_UTILITY, 0)
     }
     class func backgroundQueue() -> dispatch_queue_t {
-        return dispatch_get_global_queue(+QOS_CLASS_BACKGROUND, 0)
+        return DispatchQueue.global(+QOS_CLASS_BACKGROUND, 0)
     }
 }
 
@@ -63,7 +63,7 @@ public struct Async {
     
     private let block: dispatch_block_t
     
-    private init(_ block: dispatch_block_t) {
+    private init(_ block: @escaping dispatch_block_t) {
         self.block = block
     }
 }
@@ -265,3 +265,4 @@ extension qos_class_t {
         }
     }
 }
+*/

@@ -13,7 +13,7 @@ class ToneCurveEditorCurveLayer: CALayer
 {
     weak var toneCurveEditor : ToneCurveEditor?
     
-    override func drawInContext(ctx: CGContext)
+    override func draw(in ctx: CGContext)
     {
         if let curveValues = toneCurveEditor?.curveValues
         {
@@ -26,7 +26,7 @@ class ToneCurveEditorCurveLayer: CALayer
 
             var interpolationPoints : [CGPoint] = [CGPoint]()
             
-            for (i, value): (Int, Double) in curveValues.enumerate()
+            for (i, value): (Int, Double) in curveValues.enumerated()
             {
                 let pathPointX = i * (widgetWidth / curveValues.count) + (widgetWidth / curveValues.count / 2)
                 let pathPointY = thumbRadius + margin + widgetHeight - Int(Double(widgetHeight) * value)
@@ -34,13 +34,13 @@ class ToneCurveEditorCurveLayer: CALayer
                 interpolationPoints.append(CGPoint(x: pathPointX,y: pathPointY))
             }
      
-            path.interpolatePointsWithHermite(interpolationPoints)
+            path.interpolatePointsWithHermite(interpolationPoints: interpolationPoints)
        
-            CGContextSetLineJoin(ctx, CGLineJoin.Round)
-            CGContextAddPath(ctx, path.CGPath)
-            CGContextSetStrokeColorWithColor(ctx, UIColor.blueColor().CGColor)
-            CGContextSetLineWidth(ctx, 6)
-            CGContextStrokePath(ctx)
+            ctx.setLineJoin(CGLineJoin.round)
+            ctx.addPath(path.cgPath)
+            ctx.setStrokeColor(UIColor.blue.cgColor)
+            ctx.setLineWidth(6)
+            ctx.strokePath()
         }
     }
 
