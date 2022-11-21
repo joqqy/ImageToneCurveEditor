@@ -88,7 +88,7 @@ class ImageWidget: UIControl , UINavigationControllerDelegate, UIImagePickerCont
         }
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
+    private func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
     {
 //        backgroundBlock?.cancel()
 //        backgroundBlock = nil
@@ -138,7 +138,7 @@ class ImageWidget: UIControl , UINavigationControllerDelegate, UIImagePickerCont
     }
     
     
-    class func applyFilter(loadedImage loadedImage: UIImage, curveValues: [Double], ciContext: CIContext, filter: CIFilter) -> UIImage
+    class func applyFilter(loadedImage: UIImage, curveValues: [Double], ciContext: CIContext, filter: CIFilter) -> UIImage
     {
         let coreImage = CIImage(image: loadedImage)
         
